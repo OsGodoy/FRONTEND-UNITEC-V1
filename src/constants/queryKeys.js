@@ -3,7 +3,7 @@ export const queryKeys = {
 
   students: ["students"],
 
-  studentDetail: (id) => ["students", id],
+  studentDetail: (id) => ["student", id],
 
   // enrollments: ["enrollments"],
 

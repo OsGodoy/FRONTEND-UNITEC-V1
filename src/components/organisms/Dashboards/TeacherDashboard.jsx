@@ -33,11 +33,7 @@ const TeacherDashboard = ({ users }) => {
               </h2>
             </div>
             <DivContainerCenter className="h-full justify-start">
-              <div
-                className={`flex w-full pb-2 md:mb-2 border-b border-mist-700
-                ${isUpdate && "mb-2"}
-                `}
-              >
+              <div className="flex w-full pb-2">
                 {isUpdate ? (
                   <DivContainerModal
                     onClick={() => {

@@ -1,67 +1,90 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 
-export const useGetDataList = (key, fetchFn, filters = {}) => {
+export const useGetData = (key, fetchFn, filters = {}, options = {}) => {
   const query = useQuery({
-    queryKey: [...key, filters],
+    queryKey: Array.isArray(key) ? [...key, filters] : [key, filters],
     queryFn: () => fetchFn(filters),
     staleTime: 1000 * 60 * 5,
+    // Mantener la lista vieja mientras carga la nueva
+    placeholderData: keepPreviousData,
+    // Permitir sobrescribir cualquier config (staleTime, gcTime, etc.) desde el componente.
+    ...options,
   });
 
   return {
+    ...query,
+    // Asegurar un array para evitar errores de .map()
     data: query.data ?? [],
-    isLoading: query.isLoading,
-    isFetching: query.isFetching,
-    isError: query.isError,
-    error: query.error,
-    refetch: query.refetch,
   };
 };
 
-export const useGetDataById = (key, fetchFn, id) => {
+export const useGetDataById = (key, fetchFn, id, options = {}) => {
   const query = useQuery({
-    queryKey: [...key, id],
+    queryKey: Array.isArray(key) ? [...key, id] : [key, id],
     queryFn: () => fetchFn(id),
+    // No ejecuta la query si no hay ID
     enabled: !!id,
+    ...options,
   });
 
   return {
+    ...query,
     data: query.data ?? null,
-    isLoading: query.isLoading,
-    isError: query.isError,
-    error: query.error,
   };
 };
 
-export const useMutationData = (keyToInvalidate, apiFn) => {
+export const useMutationData = (keyToInvalidate, apiFn, options = {}) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: apiFn,
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: keyToInvalidate });
+    onSuccess: async (data, variables, context) => {
+      // Invalidar la lista principal
+      const baseKey = Array.isArray(keyToInvalidate)
+        ? keyToInvalidate
+        : [keyToInvalidate];
+      await queryClient.invalidateQueries({ queryKey: baseKey });
 
-      const specificId =
-        variables?.id ||
-        variables?.enrollmentId ||
-        variables?.studentId ||
-        (typeof variables === "string" || typeof variables === "number"
-          ? variables
-          : null);
+      // Invalidar el detalle específico
+      let specificId = null;
+      if (variables && typeof variables === "object") {
+        // Buscar 'id' o cualquier llave que termine en 'Id'
+        const idKey = Object.keys(variables).find(
+          (k) => k === "id" || k.toLowerCase().endsWith("id"),
+        );
+        specificId = idKey ? variables[idKey] : null;
+      } else if (
+        typeof variables === "string" ||
+        typeof variables === "number"
+      ) {
+        specificId = variables;
+      }
 
       if (specificId) {
-        queryClient.invalidateQueries({
-          queryKey: [...keyToInvalidate, specificId],
+        await queryClient.invalidateQueries({
+          queryKey: [...baseKey, specificId],
         });
       }
+
+      // Ejecuta el callback del componente si existe
+      if (options.onSuccess) options.onSuccess(data, variables, context);
     },
+    onError: (err, variables, context) => {
+      if (options.onError) options.onError(err, variables, context);
+    },
+    ...options,
   });
 
   return {
-    execute: mutation.mutateAsync,
-    isPending: mutation.isPending,
-    isSuccess: mutation.isSuccess,
-    isError: mutation.isError,
-    error: mutation.error,
-    reset: mutation.reset,
+    ...mutation,
+    // Uso general sin try/catch
+    execute: mutation.mutate,
+    // Por si el componente necesita 'await'
+    executeAsync: mutation.mutateAsync,
   };
 };

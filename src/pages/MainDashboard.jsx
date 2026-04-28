@@ -40,10 +40,10 @@ const MainDashboard = () => {
             onClick={toggleView}
             className="w-25 flex items-center bg-mist-300 p-2 rounded-full border-3 border-mist-500 mx-4 cursor-pointer relative"
           >
-            <div className="absolute inset-0 bg-mist-400/50 rounded-full h-5 m-2" />
+            <div className="absolute inset-0 bg-mist-400/50 rounded-full h-5 m-2 shadow-inner shadow-mist-500" />
             <button
               type="button"
-              className={`h-5 w-10 rounded-full transition-all duration-300 shadow shadow-mist-400 cursor-pointer ${
+              className={`h-5 w-10 rounded-full transition-all duration-300 shadow shadow-mist-500 cursor-pointer ${
                 view === "teacher"
                   ? "bg-white translate-x-0"
                   : "bg-white translate-x-9.5"

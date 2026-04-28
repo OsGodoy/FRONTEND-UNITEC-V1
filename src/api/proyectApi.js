@@ -1,10 +1,29 @@
-import { getData, getDataById, updateData } from "./apiFactory";
+import {
+  getData,
+  getDataById,
+  patchData,
+  postData,
+  updateData,
+} from "./apiFactory";
 
-export const getUsers = (filters) => getData("/users", filters);
+export const getUsers = async (filters = {}) => {
+  const params = { ...filters };
+  return await getData("/users", params);
+};
 
-export const getStudentById = (id) => getDataById("/student", id);
+export const getStudents = async (filters = {}) => {
+  const params = { ...filters };
+  return await getData("/students", params);
+};
 
-export const updateGrade = (gradeData) =>
-  updateData("PATCH", "/grades/update", gradeData);
+export const getStudentById = async (id) => {
+  return await getDataById("/student", id);
+};
 
-export const createItem = (itemData) => updateData("POST", "/items", itemData);
+export const updateGrade = async (gradeData) => {
+  return await patchData("/grades/update", gradeData);
+};
+
+// export const createItem = async (itemData) => {
+//   return await postData("/items", itemData);
+// };

@@ -3,7 +3,7 @@ const Input = ({
   bg = "bg-white",
   textColor = "text-blue-950",
   border = "border",
-  placeholderColor = "placeholder-neutral-500",
+  placeholderColor = "placeholder-mist-400",
   ...props
 }) => {
   return (

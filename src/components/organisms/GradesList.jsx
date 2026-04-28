@@ -21,7 +21,7 @@ const GradesList = ({
 }) => {
   const finalId = idForUpdate || studentId;
   const { student, isStudentLoading, isStudentError } = useStudentData(finalId);
-  const { updateGradeMethod, isUpdatingGrade } = useUpdateGradeMutation();
+  const { updateGradeMethodAsync, isUpdatingGrade } = useUpdateGradeMutation();
 
   const [editingId, setEditingId] = useState(null);
   const [newScore, setNewScore] = useState("");
@@ -37,26 +37,19 @@ const GradesList = ({
   };
 
   const handleConfirm = async (enrollmentId) => {
-    const actionPromise = updateGradeMethod({
-      enrollmentId,
-      score: parseFloat(newScore),
-    });
+    try {
+      const payload = {
+        enrollmentId,
+        score: parseFloat(newScore),
+      };
 
-    toast.promise(actionPromise, {
-      loading: "Actualizando nota...",
-      success: () => {
-        setEditingId(null);
-        setNewScore("");
-        return "Nota actualizada correctamente";
-      },
-      error: (err) => {
-        const errors = err?.response?.data?.errors;
-        if (Array.isArray(errors) && errors.length > 0) {
-          return errors.map((e) => e.message).join(", ");
-        }
-        return "Error al actualizar la nota";
-      },
-    });
+      await updateGradeMethodAsync(payload);
+
+      setEditingId(null);
+      setNewScore("");
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
 
   if (isStudentLoading) {
@@ -160,10 +153,12 @@ const GradesList = ({
                   </td>
                 )}
                 <td
+                  onClick={() => handleStartEdit(subject)}
                   className={`text-center transition-all
                     ${editingId === subject.enrollmentId ? "opacity-0 duration-75" : "opacity-100"}
                     `}
                 >
+                  {/* NOTA ACTUAL */}
                   <p
                     className={`border rounded py-1
                     ${subject.score < 5 && "border-rose-500/40"}
@@ -202,7 +197,7 @@ const GradesList = ({
                           onClick={handleCancel}
                           disabled={isUpdatingGrade}
                           className={`h-full px-2 border border-rose-800 bg-rose-600/20 text-rose-300 rounded hover:bg-rose-600/40 cursor-pointer
-                            ${isUpdatingGrade && "opacity-50"}
+                            ${isUpdatingGrade ? "opacity-50 cursor-not-allowed" : ""}
                             `}
                         >
                           <X className="size-4" />

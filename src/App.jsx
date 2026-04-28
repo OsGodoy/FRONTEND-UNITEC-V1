@@ -1,11 +1,14 @@
 import { Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
+import { SearchProvider } from "./contexts/searchContext";
 
 function App() {
   return (
     <>
-      <Toaster richColors position="top-center" />
-      <Outlet />
+      <SearchProvider>
+        <Toaster richColors position="top-center" />
+        <Outlet />
+      </SearchProvider>
     </>
   );
 }
