@@ -192,7 +192,7 @@ export const ButtonSearch = ({
   return (
     <button
       onClick={onClick}
-      className={`px-2 h-full rounded-r-full ${stateClasses} ${className} ${scaleFx("sm")}`}
+      className={`px-2 h-full rounded-r-full ${stateClasses} ${className}`}
       {...props}
     >
       <Search className={scaleFx("md")} />
@@ -210,7 +210,7 @@ export const ButtonSearchCancel = ({
 }) => {
   return (
     <button
-      className={`px-2 h-full rounded-r-full pointer-events-auto cursor-pointer ${className} ${bgColor} ${textColor} ${scaleFx("sm")}`}
+      className={`px-2 h-full rounded-r-full pointer-events-auto cursor-pointer ${className} ${bgColor} ${textColor}`}
       onClick={onClick}
       {...props}
     >
