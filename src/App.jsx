@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
-import { SearchProvider } from "./contexts/searchContext";
+import { SearchProvider } from "./contexts/SearchContext";
 
 function App() {
   return (
