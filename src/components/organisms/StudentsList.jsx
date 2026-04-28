@@ -69,7 +69,6 @@ const StudentsList = ({ isUpdate, setIsUpdate }) => {
             {searchTerm !== "" ? (
               <ButtonSearchCancel
                 onClick={handleClearSearch}
-                className={`${ButtonSearchCancel}`}
               >
                 <CircleX className={`${scaleFx("md")}`} />
               </ButtonSearchCancel>
