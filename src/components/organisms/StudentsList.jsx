@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import GradesList from "./GradesList";
 import StudentListHeader from "../molecules/StudentListHeader";
 import { useStudentsData } from "../../hooks/useApiData";
-import { useSearch } from "../../contexts/searchContext";
+import { useSearch } from "../../contexts/SearchContext";
 import ErrorPage from "../atoms/ErrorPage";
 import Input from "../atoms/Input";
 import { scaleFx } from "../../utils/styles";
