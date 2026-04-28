@@ -156,6 +156,7 @@ const GradesList = ({
                   onClick={() => handleStartEdit(subject)}
                   className={`text-center transition-all
                     ${editingId === subject.enrollmentId ? "opacity-0 duration-75" : "opacity-100"}
+                    ${isStudentDash ? "pointer-events-none" : "pointer-events-auto cursor-pointer"}
                     `}
                 >
                   {/* NOTA ACTUAL */}
